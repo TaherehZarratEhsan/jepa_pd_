@@ -27,7 +27,8 @@ TARGET_LEN = int(TARGET_FPS * TARGET_DURATION)  # 245
 
 # --------- USER SETTINGS (edit here) ----------
 ANNOTATED_PKL = r'/data/diag/Tahereh/new/jepaa/data/video_keypoints.pkl'
-OUTPUT_DIR = r"my data_prep"
+# Always write into the existing `my data_prep/` directory, even if you run the script from inside it.
+OUTPUT_DIR = str(Path(__file__).resolve().parent)
 TRAIN_RATIO = 0.7
 VAL_RATIO = 0.1  # test = 1 - train - val
 TRAIN_SHARDS = 4
