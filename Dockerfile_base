@@ -1,0 +1,17 @@
+
+FROM dockerdex.umcn.nl:5005/diag/base-images:base-pt2.7.1
+RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
+
+
+ARG CODE_DIR=/workspace
+WORKDIR ${CODE_DIR}
+# Copy your local requirements.in file first
+COPY requirements.in .
+
+# Now install from the copied file
+RUN pip3 install -r requirements.in
+COPY . .
+
+### Python path
+ENV PYTHONPATH="${PYTHONPATH}:/workspace:/opt/ASAP/bin:/workspace/jepa"
+

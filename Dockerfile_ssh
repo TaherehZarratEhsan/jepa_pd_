@@ -1,0 +1,46 @@
+FROM nvidia/cuda:12.6.1-runtime-ubuntu24.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install Python + SSH
+RUN apt-get update && apt-get install -y \
+    python3.12 python3.12-venv python3-pip \
+    openssh-server sudo \
+    libjpeg-dev libpng-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Setup user and SSH
+RUN useradd -m -s /bin/bash taherehehsan && \
+    echo "taherehehsan ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers && \
+    mkdir /var/run/sshd && \
+    mkdir -p /home/taherehehsan/.ssh
+
+RUN echo "taherehehsan:password123" | chpasswd
+RUN sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config
+
+WORKDIR /workspace
+
+# Create and activate virtual environment
+RUN python3.12 -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Upgrade pip inside venv
+RUN pip install --upgrade pip setuptools wheel
+
+# Create clean requirements (remove NVIDIA packages and torch)
+COPY requirements.in .
+RUN grep -v '^nvidia-' requirements.in | grep -v '^torch==' | grep -v '^torchaudio==' > requirements_clean.in
+
+# Install PyTorch with CUDA 12.6
+RUN pip install torch==2.7.0 torchaudio==2.7.0 \
+    --index-url https://download.pytorch.org/whl/cu126
+
+# Install remaining packages
+RUN pip install -r requirements_clean.in
+
+COPY . .
+
+EXPOSE 22
+
+USER taherehehsan
+CMD ["/bin/bash"]
