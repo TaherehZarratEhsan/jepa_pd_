@@ -1,0 +1,10 @@
+defaults:
+  - data: custom_signal
+  - optimizer: adamW
+  - trainer: default_trainer
+  - extractor : ConvFeatureExtractor_signal
+  - masker : MultiBlock
+
+model: JEPA
+save_dir: 'outputs'
+seed: 42

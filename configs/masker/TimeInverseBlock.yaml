@@ -1,0 +1,8 @@
+target_masks_per_context : 4
+context_mask_prob : 0.25
+context_mask_length : 6
+target_prob : 0.07
+target_length : 4
+ratio_cutoff : 0.25
+channel_based_masking : False
+name: time-inverse-masker

@@ -1,0 +1,24 @@
+epochs: -1
+batch_size: 64
+accelerator: gpu
+steps: 20800
+precision: bf16-mixed
+use_gradient_checkpointing: False
+compile_modules: True
+num_gpus : 2
+size : base
+average_top_k_layers : 4
+warmup_steps: 2000
+# Transformer configuration (overrides the defaults in code).
+# Recommended for short, low-rate 1D signals (e.g., 60 tokens/sample).
+encoder_d_model: 256
+encoder_nhead: 8
+encoder_num_layers: 6
+encoder_mlp_ratio: 2.0
+encoder_dropout: 0.1
+
+decoder_d_model: 256
+decoder_nhead: 8
+decoder_num_layers: 4
+decoder_mlp_ratio: 2.0
+decoder_dropout: 0.1

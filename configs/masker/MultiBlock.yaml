@@ -1,0 +1,8 @@
+target_masks_per_context : 2
+context_cluster_d : 0.5
+context_cluster_u : 0.65
+target_cluster_d : 0.08
+target_cluster_u : 0.12
+ratio_cutoff : 0.3
+channel_based_masking : False
+name: block-masker

@@ -1,0 +1,6 @@
+conv_layers_spec: "[(64, 3, 1), (128, 3, 2), (256, 3, 2)]"
+dropout: 0.0
+mode: default
+conv_bias: False
+name: spatial-conv-extractor
+depthwise: False
