@@ -4,6 +4,7 @@ defaults:
   - trainer: default_trainer
   - extractor : ConvFeatureExtractor_signal
   - masker : MultiBlock
+  - _self_
 
 model: JEPA
 save_dir: 'outputs'

@@ -1,4 +1,5 @@
 import gc
+import os
 
 import hydra
 import pytorch_lightning as pl
@@ -55,6 +56,16 @@ torch.backends.cuda.matmul.allow_fp16_reduced_precision_reduction = True
 
 # Enable cuDNN benchmarking for consistent input sizes
 torch.backends.cudnn.benchmark = True
+
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+
+
+def _resolve_path(p: str) -> str:
+    # Keep remote URLs untouched
+    if "://" in p:
+        return p
+    # Make paths robust to Hydra changing the working directory
+    return p if os.path.isabs(p) else os.path.abspath(os.path.join(PROJECT_ROOT, p))
 
 
 class ComponentFactory:
@@ -247,7 +258,7 @@ def setup_callbacks(cfg):
         dirpath=f"{cfg.save_dir}/saved_models_jepa_naturalistic_mix/{identity.replace('_', '/')}",
         filename="{step}",
         verbose=True,
-        every_n_train_steps=25000,
+        every_n_train_steps=2000,
         save_last=True,
         enable_version_counter=True,
         save_top_k=-1,
@@ -285,8 +296,8 @@ def create_data_module(cfg, nr_patches) -> pl.LightningDataModule:
     factory = ComponentFactory()
     masker = factory.create_masker(cfg)
     return WebSignalDataModule(
-        base_data_dir=cfg.data.base_data_dir,
-        val_data_dir=cfg.data.val_data_dir,
+        base_data_dir=_resolve_path(cfg.data.base_data_dir),
+        val_data_dir=_resolve_path(cfg.data.val_data_dir),
         batch_size=cfg.trainer.batch_size,
         masker=masker,
         nr_samples_per_audio=cfg.data.samples_per_audio,
